@@ -1,0 +1,52 @@
+{
+  "env": {
+    "browser": true,
+    "webextensions": true,
+    "es2021": true,
+    "node": true,
+    "mocha": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@babel/eslint-parser",
+  "plugins": [
+    "react",
+    "react-hooks",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": [
+        "@babel/preset-react"
+      ]
+    }
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
+    "react/prop-types": [
+      0
+    ],
+    "no-unused-vars": [
+      0,
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false
+      }
+    ], // 변수 사용안할때 뜨는 에러 off -> 추후 삭제 필요
+    "no-useless-catch": [
+      0
+    ] // Unnecessary try/catch wrapper 에러 Off (\csstorage\instance.js, \options\instance.js, \wallet\instance.js, utils 파일 등에서 나타남)
+  }
+}

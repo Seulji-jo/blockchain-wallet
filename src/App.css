@@ -1,0 +1,115 @@
+@import url('./_reset.css');
+
+.App {
+  background-color: #EDF2F7;
+  min-height: 100vh;
+  text-align: center;
+  color: #333;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-header>nav {
+  padding: 20px 0;
+  display: flex;
+  gap: 20px;
+}
+
+nav>a {
+  color: #48523d;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+nav>a.active::after {
+  content: '';
+  display: block;
+  /* width: 65px; */
+  height: 2px;
+  margin-top: 4px;
+  background-color: #48523d;
+}
+
+.App-main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+}
+
+.container__meta>* {
+  padding: 20px 0;
+}
+
+.container__wallet {
+  width: 500px;
+  white-space: pre-line;
+  word-break: break-all;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #B5C6B8;
+}
+
+input {
+  width: 300px;
+  padding: 7px 12px;
+  border: none;
+  border: 1px solid #48523d;
+  background-color: transparent;
+}
+
+select {
+  padding: 6px 12px;
+  border: 1px solid #48523d;
+  background-color: transparent;
+}
+
+select:focus-visible {
+  outline: none;
+}
+
+option {
+  padding: 4px;
+}
+
+/* colorPalette
+#EDF2F7
+#E4E8F4
+#8FA2CA
+#B5C6B8
+#48523D
+*/
