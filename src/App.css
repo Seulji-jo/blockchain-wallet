@@ -58,46 +58,38 @@ nav>a.active::after {
   gap: 20px;
 }
 
-.row {
-  display: flex;
-  gap: 30px;
+label {
+  margin-bottom: 6px;
+  font-size: 12px;
 }
 
-.container__meta>* {
-  padding: 20px 0;
-}
-
-.container__wallet {
-  width: 500px;
-  white-space: pre-line;
-  word-break: break-all;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+button,
+input,
+select {
+  height: 34px;
+  padding: 8px 12px;
 }
 
 button {
-  padding: 8px 12px;
+
   border: none;
   background-color: #B5C6B8;
 }
 
 input {
-  width: 300px;
-  padding: 7px 12px;
+  width: 250px;
   border: none;
   border: 1px solid #48523d;
   background-color: transparent;
 }
 
 select {
-  padding: 6px 12px;
   border: 1px solid #48523d;
+  line-height: 18px;
   background-color: transparent;
 }
 
+input:focus-visible,
 select:focus-visible {
   outline: none;
 }
@@ -113,3 +105,53 @@ option {
 #B5C6B8
 #48523D
 */
+
+.row {
+  display: flex;
+  gap: 30px;
+}
+
+
+.container__meta>* {
+  padding: 20px 0;
+}
+
+.container__wallet {
+  width: 400px;
+  padding: 60px 40px;
+  white-space: pre-line;
+  word-break: break-all;
+  border: 1px solid #48523d;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.wallet--value {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 1px solid #48523d;
+}
+
+.input__wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wallet--pkey {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

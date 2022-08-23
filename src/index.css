@@ -3,8 +3,10 @@
 body {
   margin: 0;
   font-family: 'Roboto', 'Noto Sans KR';
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
 code {

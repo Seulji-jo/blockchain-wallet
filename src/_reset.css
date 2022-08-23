@@ -89,6 +89,7 @@ video {
   border: 0;
   font-size: 100%;
   font: inherit;
+  font-family: 'Roboto', 'Noto Sans KR';
   vertical-align: baseline;
 }
 
@@ -105,16 +106,24 @@ menu,
 nav,
 section {
   display: block;
+  box-sizing: border-box;
+}
+
+a {
+  font-family: 'Roboto', 'Noto Sans KR';
 }
 
 input,
 button,
 section {
   box-sizing: border-box;
+  font-size: 13px;
+  line-height: 18px;
 }
 
 body {
   line-height: 1;
+  box-sizing: border-box;
 }
 
 ol,
