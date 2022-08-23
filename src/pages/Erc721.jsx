@@ -3,6 +3,8 @@ import axios from 'axios';
 import { uploadImg2Ipfs, sendJson2Ipfs } from '../api/index';
 import { ethers } from 'ethers';
 import HannahNftAbi from '../contracts/HannahNftAbi.json';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 function Erc721() {
   const [name, setName] = useState('');
@@ -42,6 +44,7 @@ function Erc721() {
     const nftData = { name, description, image: `ipfs://${ipfsHash}` };
     const { data: uploadDataRes } = await sendJson2Ipfs(JSON.stringify(nftData));
     setTokenUri(uploadDataRes.IpfsHash);
+    // setTokenUri(nftData);
   };
 
   const getSigner = () => {
@@ -51,20 +54,27 @@ function Erc721() {
     return wallet.connect(provider);
   };
 
-  const mintNft = async () => {
-    try {
-      await handleUploadNft();
-      const contractAddr = '0x7528D0211c5926EbFddFE9FBCafFDdC8F6adC5f8';
-      const providerSigner = getSigner();
-      const contract = new ethers.Contract(contractAddr, HannahNftAbi, providerSigner);
-      const uri = `ipfs://${tokenUri}`;
-      const mintingNft = await contract.safeMint(providerSigner.address, uri);
-      console.log(mintingNft);
-      setTxHash(mintingNft.hash);
-    } catch (error) {
-      console.log(error);
+  const mintNft = useCallback(async () => {
+    if (tokenUri) {
+      try {
+        const contractAddr = '0x7528D0211c5926EbFddFE9FBCafFDdC8F6adC5f8';
+        const providerSigner = getSigner();
+        const contract = new ethers.Contract(contractAddr, HannahNftAbi, providerSigner);
+        // const uri = `ipfs://${tokenUri}`;
+        // ipfs를 붙여 민팅을 하게 되면 메타마스크에서 이미지가 나타나지 않는다.
+        const mintingNft = await contract.safeMint(providerSigner.address, tokenUri);
+        console.log(mintingNft);
+        setTxHash(mintingNft.hash);
+        resetForm();
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };
+  }, [tokenUri]);
+
+  useEffect(() => {
+    mintNft();
+  }, [mintNft]);
 
   return (
     <div>
@@ -78,16 +88,18 @@ function Erc721() {
             <input
               type="text"
               placeholder="e.g. My first NFT!"
+              value={name}
               onChange={event => setName(event.target.value)}
             />
             <h2>✍️ Description: </h2>
             <input
               type="text"
               placeholder="e.g. Even cooler than cryptokitties ;)"
+              value={description}
               onChange={event => setDescription(event.target.value)}
             />
           </form>
-          <button onClick={mintNft} disabled={!imgFile || !name || !description}>
+          <button onClick={handleUploadNft} disabled={!imgFile || !name || !description}>
             Mint
           </button>
         </div>
