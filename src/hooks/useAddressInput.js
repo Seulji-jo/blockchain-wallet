@@ -4,7 +4,8 @@ function useAddressInput(initialState = '') {
   const [recipient, setRecipient] = useState('');
 
   const handleRecipient = useCallback(e => {
-    setRecipient(e.target.value);
+    if (typeof e === 'string') setRecipient(e);
+    else setRecipient(e.target.value);
   }, []);
 
   const resetRecipient = useCallback(() => setRecipient(initialState), [initialState]);

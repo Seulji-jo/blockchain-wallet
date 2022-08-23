@@ -1,10 +1,9 @@
 import { BigNumber, ethers } from 'ethers';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useAddressInput from '../hooks/useAddressInput';
 import useCoinInput from '../hooks/useCoinInput';
 import useNetworks from '../hooks/useNetworks';
 import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
-import { parseUnits } from 'ethers/lib/utils';
 
 function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const { ethereum } = window;
@@ -56,12 +55,41 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     if (metaMaskAddr) switchChainId();
   }, [network]);
 
+  const getBalance = async () => {
+    const providerAcct = await provider.send('eth_requestAccounts');
+    const bigNumBalance = await provider.getBalance(providerAcct[0]);
+    const balance = ethers.utils.formatUnits(bigNumBalance);
+    console.log(balance);
+    setBalance(balance);
+  };
+
+  const handleAccountsChanged = async accounts => {
+    try {
+      setMetaMaskAddr(accounts[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (metaMaskAddr) {
+      // ethereum.on('chainChanged', handleChainChanged);
+      ethereum.on('accountsChanged', handleAccountsChanged);
+    }
+    return () => {
+      // ethereum.removeListener('chainChanged', handleChainChanged);
+      ethereum.removeListener('accountsChanged', handleAccountsChanged);
+    };
+  }, [ethereum]);
+
   const connetingMetaMask = async () => {
     if (ethereum) {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const providerAcct = await provider.send('eth_requestAccounts');
+        console.log(provider);
+        console.log(providerAcct);
 
         const bigNumBalance = await provider.getBalance(providerAcct[0]);
         const balance = ethers.utils.formatUnits(bigNumBalance);
@@ -93,6 +121,11 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     return tx;
   };
 
+  const getPkeyAddr = () => {
+    if (!sendAddr) alert('개인키를 생성해주세요!');
+    else handleRecipient(sendAddr);
+  };
+
   const sendTransaction = async (recipient, msg) => {
     if (!recipient) {
       alert(msg);
@@ -106,6 +139,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
         alert('Send finished!');
         resetCoinVal();
         resetRecipient();
+        getBalance();
       } catch (error) {
         console.log(error);
         alert('failed to send!!');
@@ -113,50 +147,41 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     }
   };
 
-  const sendToken = async () => {
-    console.log(tokenBal);
-    const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    console.log(tx);
-  };
-
   return (
     <div className="container__wallet">
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
-      <div>MetaMask Address: {metaMaskAddr}</div>
-      <div>Balance: {balance}</div>
-      <div>
-        <label htmlFor="coinVal">Value: </label>
-        <input type="text" name="coinVal" value={coinVal} onChange={handleCoinVal} />
-        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-          {networkList.map(network => (
-            <option key={network.id} value={network.network}>
-              {network.name}
-            </option>
-          ))}
-        </select>
+      <div className="input__wrapper">
+        <label>MetaMask Address:</label>
+        <div className="wallet--value">{metaMaskAddr}</div>
       </div>
-      <div>
+      <div className="input__wrapper">
+        <label>Balance:</label>
+        <div className="wallet--value">{balance}</div>
+      </div>
+      <div className="input__wrapper">
         <label htmlFor="coinVal">To: </label>
-        <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-        <button onClick={() => sendTransaction(recipient, '주소를 입력해주세요!')}>
-          send To Address
-        </button>
-      </div>
-      <button onClick={() => sendTransaction(sendAddr, 'private key를 생성해주세요')}>
-        send To New Private Key
-      </button>
-      <div>
-        <div className="token">Token</div>
-        <div>
-          {tokenBalance}
-          <span> {symbol}</span>
+        <div className="input__row">
+          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
+          <button onClick={getPkeyAddr}>PKey Addr</button>
         </div>
-        <label htmlFor="tokenBal">Value: </label>
-        <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
-        <button onClick={sendToken}>send token</button>
       </div>
+      <div className="input__wrapper">
+        <label htmlFor="coinVal">Value: </label>
+        <div className="input__row">
+          <input type="text" name="coinVal" value={coinVal} onChange={handleCoinVal} />
+          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+            {networkList.map(network => (
+              <option key={network.id} value={network.network}>
+                {network.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <button onClick={() => sendTransaction(recipient, 'private key를 생성해주세요')}>Send</button>
     </div>
   );
 }

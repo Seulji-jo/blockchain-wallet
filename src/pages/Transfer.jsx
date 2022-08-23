@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import MetaMaskPart from '../components/MetaMaskPart';
+import MetaMaskApp from '../components/MetaMaskApp';
 import NewPKeyPart from '../components/NewPKeyPart';
 
 function Transfer() {
@@ -9,12 +8,12 @@ function Transfer() {
 
   return (
     <div className="row">
-      {/* <MetaMaskPart
+      <MetaMaskApp
         sendAddr={newAddr}
         metaMaskAddr={metaMaskAddr}
         setMetaMaskAddr={setMetaMaskAddr}
       />
-      <NewPKeyPart sendAddr={metaMaskAddr} newAddr={newAddr} setNewAddr={setNewAddr} /> */}
+      <NewPKeyPart sendAddr={metaMaskAddr} newAddr={newAddr} setNewAddr={setNewAddr} />
     </div>
   );
 }

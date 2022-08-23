@@ -94,6 +94,11 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     }
   };
 
+  const getMetaMaskAddr = () => {
+    if (!sendAddr) alert('메타마스크에 연결해주세요!');
+    else handleRecipient(sendAddr);
+  };
+
   const createTx = async recipient => {
     console.log('provider: ');
     console.log(provider);
@@ -166,40 +171,38 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       <button onClick={createPrivateKey} disabled={wallet?.privateKey}>
         New Private Key 생성
       </button>
-      <div>New Private Key: {wallet?.privateKey}</div>
-      <div>New Address: {wallet?.address}</div>
-      <div>
-        <label htmlFor="coinVal">Value: </label>
-        <input type="text" name="coinVal" onChange={handleCoinVal} value={coinVal} />
-        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-          {networkList.map(network => (
-            <option key={network.id} value={network.network}>
-              {network.name}
-            </option>
-          ))}
-        </select>
+      <div className="input__wrapper">
+        <label>New Private Key:</label>
+        <div className="wallet--value wallet--pkey">{wallet?.privateKey}</div>
       </div>
-      <div>
+      <div className="input__wrapper">
+        <label>New Address:</label>
+        <div className="wallet--value">{wallet?.address}</div>
+      </div>
+      <div className="input__wrapper">
         <label htmlFor="coinVal">To: </label>
-        <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-        <button onClick={() => sendTransaction(recipient, '주소를 입력해주세요!')}>
-          send To Address
-        </button>
+        <div className="input__row">
+          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
+          <button onClick={getMetaMaskAddr}>메타마스크</button>
+        </div>
       </div>
-      <button onClick={() => sendTransaction(sendAddr, 'private key를 생성해주세요')}>
+      <div className="input__wrapper">
+        <label htmlFor="coinVal">Value: </label>
+        <div className="input__row">
+          <input type="text" name="coinVal" onChange={handleCoinVal} value={coinVal} />
+          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+            {networkList.map(network => (
+              <option key={network.id} value={network.network}>
+                {network.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <button onClick={() => sendTransaction(recipient, 'private key를 생성해주세요')}>
         send to Metamask
       </button>
-      <div>
-        <div className="token">Token</div>
-        <div>
-          {tokenBalance}
-          <span> {symbol}</span>
-        </div>
-        <label htmlFor="tokenBal">Value: </label>
-        <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
-        <button onClick={sendToken}>send token</button>
-        <button onClick={handleTxList}>showTxList</button>
-      </div>
     </div>
   );
 }
