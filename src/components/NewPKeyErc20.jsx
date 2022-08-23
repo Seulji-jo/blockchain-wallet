@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { parseUnits, randomBytes } from 'ethers/lib/utils';
+import { formatEther, parseUnits, randomBytes } from 'ethers/lib/utils';
 import { Buffer } from 'buffer';
 
 import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
@@ -136,8 +136,11 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const sendToken = async () => {
     console.log(tokenBal);
     console.log(sendAddr);
-    const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    console.log(tx);
+    console.log(contract);
+    // const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
+    // console.log(tx);
+    const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
+    console.log(txFrom);
   };
 
   const handleTxList = async () => {
