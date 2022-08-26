@@ -93,28 +93,15 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     return tx;
   };
 
-  const sendTransaction = async (recipient, msg) => {
-    if (!recipient) {
-      alert(msg);
-    } else if (!coinVal) {
-      alert('Value를 입력해주세요');
-    } else {
-      const tx = await createTx(recipient);
-      try {
-        const sendTx = await signer.sendTransaction(tx);
-        console.dir(sendTx);
-        alert('Send finished!');
-        resetCoinVal();
-        resetRecipient();
-      } catch (error) {
-        console.log(error);
-        alert('failed to send!!');
-      }
-    }
+  const getPkeyAddr = () => {
+    if (!sendAddr) alert('개인키를 생성해주세요!');
+    else handleRecipient(sendAddr);
   };
 
   const sendToken = async () => {
     console.log(tokenBal);
+    // 따로 트랜젝션 생성하지 않고, Transfer함수를 사용한다.
+    // transfer 함수 내에서 transaction을 만들어 보내주는 기능을 하는듯.
     const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
     console.log(tx);
   };
@@ -124,39 +111,33 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
-      <div>MetaMask Address: {metaMaskAddr}</div>
-      <div>Balance: {balance}</div>
-      <div>
-        <label htmlFor="coinVal">Value: </label>
-        <input type="text" name="coinVal" value={coinVal} onChange={handleCoinVal} />
-        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-          {networkList.map(network => (
-            <option key={network.id} value={network.network}>
-              {network.name}
-            </option>
-          ))}
-        </select>
+      <div className="input__wrapper">
+        <label>MetaMask Address:</label>
+        <div className="wallet--value">{metaMaskAddr}</div>
       </div>
-      <div>
-        <label htmlFor="coinVal">To: </label>
-        <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-        <button onClick={() => sendTransaction(recipient, '주소를 입력해주세요!')}>
-          send To Address
-        </button>
+      <div className="input__wrapper">
+        <label>Balance:</label>
+        <div className="wallet--value">{balance}</div>
       </div>
-      <button onClick={() => sendTransaction(sendAddr, 'private key를 생성해주세요')}>
-        send To New Private Key
-      </button>
-      <div>
-        <div className="token">Token</div>
-        <div>
+      <div className="input__wrapper">
+        <label className="token">Token</label>
+        <div className="wallet--value">
           {tokenBalance}
           <span> {symbol}</span>
         </div>
+      </div>
+      <div className="input__wrapper">
+        <label htmlFor="coinVal">To: </label>
+        <div className="input__row">
+          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
+          <button onClick={getPkeyAddr}>PKey Addr</button>
+        </div>
+      </div>
+      <div className="input__wrapper">
         <label htmlFor="tokenBal">Value: </label>
         <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
-        <button onClick={sendToken}>send token</button>
       </div>
+      <button onClick={sendToken}>Send</button>
     </div>
   );
 }

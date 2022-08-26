@@ -64,13 +64,16 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
     const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
     console.log(contractAddr);
+
     const walletSigner = wallet.connect(provider);
     const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, walletSigner);
     console.log(contract);
     // const contractWProvider = contract.connect(provider);
     // console.log(contractWProvider);
     const tokenBalance = await contract.balanceOf(addr);
+    const test = await contract.balanceOf('0xBAD9d82C5c83f487EbF14BFB4C23BF7719024663');
     console.log(tokenBalance);
+    console.log(test);
 
     console.log('publicKey: ' + publicKey);
     console.log('addrFromPublic: ' + addrFromPublic);
@@ -112,56 +115,14 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     return tx;
   };
 
-  const sendTransaction = async (recipient, msg) => {
-    console.log('send');
-    if (!recipient) {
-      alert(msg);
-    } else if (!coinVal) {
-      alert('Value를 입력해주세요');
-    } else {
-      // 1. raw tx 생성
-      const rawTx = await createTx(recipient);
-      console.log('rawTx↴ ');
-      console.log(rawTx);
-      // 2. signing tx w/pKey
-      const signedTx = await wallet.signTransaction(rawTx);
-      console.log('signedTx: ' + signedTx);
-      // 3. sendTx
-      const sendTx = await provider.sendTransaction(signedTx);
-      console.log('sendTx↴ ');
-      console.log(sendTx);
-    }
-  };
-
   const sendToken = async () => {
-    console.log(tokenBal);
-    console.log(sendAddr);
-    console.log(contract);
-    // const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    // console.log(tx);
     const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
     console.log(txFrom);
   };
 
-  const handleTxList = async () => {
-    // 방법1
-    const code = await provider.getCode('0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0');
-    // console.log(code);
-    const filter = {
-      address: '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0',
-      fromBlock: 0,
-      toBlock: 'latest',
-    };
-    const infuraLogs = await provider.getLogs(filter);
-    console.log(infuraLogs); // []
-
-    // 방법2
-    let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
-    // let abi = ['event Transfer(address indexed from, address to, uint256 indexed value)'];
-    let iface = new ethers.utils.Interface(abi);
-    console.log(iface);
-    const parsedEvents = infuraLogs.map(log => iface.parseLog(log));
-    console.log(parsedEvents);
+  const getMetaMaskAddr = () => {
+    if (!sendAddr) alert('메타마스크에 연결해주세요!');
+    else handleRecipient(sendAddr);
   };
 
   return (
@@ -169,40 +130,34 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       <button onClick={createPrivateKey} disabled={wallet?.privateKey}>
         New Private Key 생성
       </button>
-      <div>New Private Key: {wallet?.privateKey}</div>
-      <div>New Address: {wallet?.address}</div>
-      <div>
-        <label htmlFor="coinVal">Value: </label>
-        <input type="text" name="coinVal" onChange={handleCoinVal} value={coinVal} />
-        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-          {networkList.map(network => (
-            <option key={network.id} value={network.network}>
-              {network.name}
-            </option>
-          ))}
-        </select>
+      <div className="input__wrapper">
+        <label>New Private Key:</label>
+        <div className="wallet--value wallet--pkey">{wallet?.privateKey}</div>
       </div>
-      <div>
-        <label htmlFor="coinVal">To: </label>
-        <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-        <button onClick={() => sendTransaction(recipient, '주소를 입력해주세요!')}>
-          send To Address
-        </button>
+      <div className="input__wrapper">
+        <label>New Address:</label>
+        <div className="wallet--value">{wallet?.address}</div>
       </div>
-      <button onClick={() => sendTransaction(sendAddr, 'private key를 생성해주세요')}>
-        send to Metamask
-      </button>
-      <div>
-        <div className="token">Token</div>
-        <div>
+      <div className="input__wrapper">
+        <label className="token">Token</label>
+        <div className="wallet--value">
           {tokenBalance}
           <span> {symbol}</span>
         </div>
+      </div>
+      <div className="input__wrapper">
+        <label htmlFor="coinVal">To: </label>
+        <div className="input__row">
+          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
+          <button onClick={getMetaMaskAddr}>메타마스크</button>
+        </div>
+      </div>
+      <div className="input__wrapper">
         <label htmlFor="tokenBal">Value: </label>
         <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
-        <button onClick={sendToken}>send token</button>
-        <button onClick={handleTxList}>showTxList</button>
       </div>
+      <button onClick={sendToken}>Send</button>
+      {/* <button onClick={handleTxList}>showTxList</button> */}
     </div>
   );
 }
