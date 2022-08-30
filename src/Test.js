@@ -7,7 +7,6 @@ import { Buffer } from 'buffer';
 import './App.css';
 import axios from 'axios';
 
-import MetaMaskPart from './components/MetaMaskPart';
 import NewPKeyPart from './components/NewPKeyPart';
 
 function App() {
