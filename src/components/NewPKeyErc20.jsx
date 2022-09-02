@@ -56,7 +56,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
   const createWalletInstance = async pKey => {
     console.log('pKey: ' + pKey);
-    const privateKey = '0x15b3eed746443d676410608e93459026a560672cd2032a719cfa2137caa06a80';
+    const privateKey = process.env.REACT_APP_PRIVATE_KEY;
     const wallet = new ethers.Wallet(privateKey);
     const addr = ethers.utils.computeAddress(privateKey);
     const publicKey = ethers.utils.computePublicKey(privateKey);

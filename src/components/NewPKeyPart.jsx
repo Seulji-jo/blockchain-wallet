@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 import { parseUnits, randomBytes } from 'ethers/lib/utils';
 import { Buffer } from 'buffer';
 
-import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
 import useCoinInput from '../hooks/useCoinInput';
 import useNetworks from '../hooks/useNetworks';
 import useAddressInput from '../hooks/useAddressInput';
@@ -12,16 +11,8 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const { network, networkList, handleNetwork } = useNetworks();
   const { coinVal, handleCoinVal, resetCoinVal } = useCoinInput();
   const { recipient, handleRecipient, resetRecipient } = useAddressInput();
-  const {
-    coinVal: tokenBal,
-    handleCoinVal: handleTokenBal,
-    resetCoinVal: resetTokenBal,
-  } = useCoinInput();
   const [wallet, setWallet] = useState(null);
   const [provider, setProvider] = useState(null);
-  const [tokenBalance, setTokenBalace] = useState('');
-  const [contract, setContract] = useState(null);
-  const [symbol, setSymbol] = useState('');
 
   useEffect(() => {
     const InfuraProvider = new ethers.providers.InfuraProvider(network.network);
@@ -56,42 +47,15 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
   const createWalletInstance = async pKey => {
     console.log('pKey: ' + pKey);
-    const privateKey = '0x15b3eed746443d676410608e93459026a560672cd2032a719cfa2137caa06a80';
+    const privateKey = process.env.REACT_APP_PRIVATE_KEY;
     const wallet = new ethers.Wallet(privateKey);
     const addr = ethers.utils.computeAddress(privateKey);
     const publicKey = ethers.utils.computePublicKey(privateKey);
     const addrFromPublic = ethers.utils.computeAddress(publicKey);
-
-    const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
-    console.log(contractAddr);
-    const walletSigner = wallet.connect(provider);
-    const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, walletSigner);
-    console.log(contract);
-    // const contractWProvider = contract.connect(provider);
-    // console.log(contractWProvider);
-    const tokenBalance = await contract.balanceOf(addr);
-    console.log(tokenBalance);
-
-    console.log('publicKey: ' + publicKey);
-    console.log('addrFromPublic: ' + addrFromPublic);
+    console.log(addrFromPublic);
 
     setWallet(wallet);
     setNewAddr(addr);
-    setContract(contract);
-    setTokenBalace(ethers.utils.formatUnits(tokenBalance));
-    setSymbol(await contract.symbol());
-  };
-
-  const sendTxFromSigner = async () => {
-    let walletSigner = wallet.connect(provider);
-    const tx = await createTx();
-    try {
-      const sendTx = walletSigner.sendTransaction(tx);
-      console.dir(sendTx);
-      alert('Send finished!');
-    } catch (error) {
-      alert('failed to send!!');
-    }
   };
 
   const getMetaMaskAddr = () => {
@@ -117,11 +81,20 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     return tx;
   };
 
-  const sendTransaction = async (recipient, msg) => {
-    console.log('send');
-    if (!recipient) {
-      alert(msg);
-    } else if (!coinVal) {
+  const sendTxFromSigner = async () => {
+    let walletSigner = wallet.connect(provider);
+    const tx = await createTx();
+    try {
+      const sendTx = walletSigner.sendTransaction(tx);
+      console.dir(sendTx);
+      alert('Send finished!');
+    } catch (error) {
+      alert('failed to send!!');
+    }
+  };
+
+  const sendTransaction = async () => {
+    if (!coinVal) {
       alert('Value를 입력해주세요');
     } else {
       // 1. raw tx 생성
@@ -136,13 +109,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       console.log('sendTx↴ ');
       console.log(sendTx);
     }
-  };
-
-  const sendToken = async () => {
-    console.log(tokenBal);
-    console.log(sendAddr);
-    const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    console.log(tx);
   };
 
   const handleTxList = async () => {
@@ -200,9 +166,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
         </div>
       </div>
 
-      <button onClick={() => sendTransaction(recipient, 'private key를 생성해주세요')}>
-        send to Metamask
-      </button>
+      <button onClick={sendTransaction}>send to Metamask</button>
     </div>
   );
 }
