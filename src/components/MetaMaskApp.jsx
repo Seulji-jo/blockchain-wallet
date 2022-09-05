@@ -19,9 +19,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const [signer, setSigner] = useState(null);
   const [provider, setProvider] = useState(null);
   const [balance, setBalance] = useState('');
-  const [tokenBalance, setTokenBalace] = useState('');
-  const [contract, setContract] = useState(null);
-  const [symbol, setSymbol] = useState('');
+  const [isClickedBtn, setIsClickedBtn] = useState(false);
 
   const checkChainId = hexChainId => {
     // 0x3으로 보내야하는데 체인아이디를 hexString으로 바꾸면 0x03으로나와 거치는 단계
@@ -54,6 +52,14 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     }
     if (metaMaskAddr) switchChainId();
   }, [network]);
+
+  useEffect(() => {
+    if (provider || isClickedBtn) {
+      console.log('check');
+      getBalance();
+    }
+    setIsClickedBtn(false);
+  }, [isClickedBtn, provider]);
 
   const getBalance = async () => {
     const providerAcct = await provider.send('eth_requestAccounts');
@@ -88,23 +94,9 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const providerAcct = await provider.send('eth_requestAccounts');
-        console.log(provider);
-        console.log(providerAcct);
-
-        const bigNumBalance = await provider.getBalance(providerAcct[0]);
-        const balance = ethers.utils.formatUnits(bigNumBalance);
-
-        const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
-        const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, signer);
-        const tokenBalance = await contract.balanceOf(providerAcct[0]);
-
         setProvider(provider);
         setMetaMaskAddr(providerAcct[0]);
         setSigner(signer);
-        setBalance(balance);
-        setContract(contract);
-        setTokenBalace(ethers.utils.formatUnits(tokenBalance));
-        setSymbol(await contract.symbol());
       } catch (err) {
         setErrMsg(err.massage);
       }
@@ -126,20 +118,23 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     else handleRecipient(sendAddr);
   };
 
-  const sendTransaction = async (recipient, msg) => {
-    if (!recipient) {
-      alert(msg);
-    } else if (!coinVal) {
+  const sendTransaction = async () => {
+    if (!coinVal) {
       alert('Value를 입력해주세요');
     } else {
       const tx = await createTx(recipient);
       try {
         const sendTx = await signer.sendTransaction(tx);
         console.dir(sendTx);
-        alert('Send finished!');
-        resetCoinVal();
-        resetRecipient();
-        getBalance();
+        const resTx = await provider.waitForTransaction(sendTx.hash);
+        console.log(resTx);
+        if (resTx) {
+          setIsClickedBtn(true);
+          resetCoinVal();
+          resetRecipient();
+          alert('Send finished!');
+        }
+        // getBalance();
       } catch (error) {
         console.log(error);
         alert('failed to send!!');
@@ -181,7 +176,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
         </div>
       </div>
 
-      <button onClick={() => sendTransaction(recipient, 'private key를 생성해주세요')}>Send</button>
+      <button onClick={() => sendTransaction()}>Send</button>
     </div>
   );
 }
