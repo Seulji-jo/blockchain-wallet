@@ -17,6 +17,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     handleCoinVal: handleTokenBal,
     resetCoinVal: resetTokenBal,
   } = useCoinInput();
+
   const [wallet, setWallet] = useState(null);
   const [provider, setProvider] = useState(null);
   const [tokenBalance, setTokenBalace] = useState('');
@@ -116,8 +117,10 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   };
 
   const sendToken = async () => {
-    const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
-    console.log(txFrom);
+    console.log(contract);
+    // const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
+    const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
+    console.log(tx);
   };
 
   const getMetaMaskAddr = () => {
