@@ -11,32 +11,32 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const { network, networkList, handleNetwork } = useNetworks();
   const { coinVal, handleCoinVal, resetCoinVal } = useCoinInput();
   const { recipient, handleRecipient, resetRecipient } = useAddressInput();
+
   const [wallet, setWallet] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [balance, setBalance] = useState('');
+  const [isClickedBtn, setIsClickedBtn] = useState(false);
 
   useEffect(() => {
     const InfuraProvider = new ethers.providers.InfuraProvider(network.network);
     // const url = `https://${network.network}.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
     // const customHttpProvider = new ethers.providers.JsonRpcProvider(url);
-    // console.log(customHttpProvider);
 
     // const provider = new ethers.providers.Web3Provider(window.ethereum);
     // const signer = InfuraProvider.getSigner(); //provider should be supported signing
     // console.log(signer);
-    const etherProvider = new ethers.providers.EtherscanProvider(network.network);
+    // const etherProvider = new ethers.providers.EtherscanProvider(network.network);
 
     setProvider(InfuraProvider);
-    const getHistory = async () => {
-      // 방법3
-      const history = await etherProvider.getHistory('0x33Ddacb5bed0F44B1Cf87626D7a3F64B86aF8752');
-      console.log(history);
-    };
-    getHistory();
-
-    let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
-    let iface = new ethers.utils.Interface(abi);
-    console.log(iface);
   }, [network]);
+
+  useEffect(() => {
+    if (newAddr || isClickedBtn) {
+      console.log('check');
+      getBalance();
+    }
+    setIsClickedBtn(false);
+  }, [isClickedBtn, newAddr]);
 
   const createPrivateKey = () => {
     const buf = Buffer.from(randomBytes(32));
@@ -58,26 +58,26 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     setNewAddr(addr);
   };
 
+  const getBalance = async () => {
+    const bigNumBalance = await provider.getBalance(newAddr);
+    const balance = ethers.utils.formatUnits(bigNumBalance);
+    console.log(balance);
+    setBalance(balance);
+  };
+
   const getMetaMaskAddr = () => {
     if (!sendAddr) alert('메타마스크에 연결해주세요!');
     else handleRecipient(sendAddr);
   };
 
   const createTx = async recipient => {
-    console.log('provider: ');
-    console.log(provider);
     const currGasPrice = await provider.getGasPrice();
     const gasPrice = ethers.utils.hexlify(parseInt(currGasPrice));
     console.log(ethers.utils.parseUnits('5', 'gwei'));
     const gasLimit = ethers.utils.hexlify(21000);
     const value = ethers.utils.parseEther(coinVal);
     const nonce = await provider.getTransactionCount(newAddr, 'pending');
-    console.log('nonce: ' + nonce);
-
     const tx = { gasPrice, gasLimit, to: recipient, value, nonce };
-    console.log(tx);
-    // const fullTx = await wallet.populateTransaction(tx);
-    // console.log(fullTx);
     return tx;
   };
 
@@ -106,30 +106,16 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       console.log('signedTx: ' + signedTx);
       // 3. sendTx
       const sendTx = await provider.sendTransaction(signedTx);
+      const resTx = await provider.waitForTransaction(sendTx.hash);
+      if (resTx) {
+        setIsClickedBtn(true);
+        resetCoinVal();
+        resetRecipient();
+        alert('Send finished!');
+      }
       console.log('sendTx↴ ');
       console.log(sendTx);
     }
-  };
-
-  const handleTxList = async () => {
-    // 방법1
-    const code = await provider.getCode('0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0');
-    // console.log(code);
-    const filter = {
-      address: '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0',
-      fromBlock: 0,
-      toBlock: 'latest',
-    };
-    const infuraLogs = await provider.getLogs(filter);
-    console.log(infuraLogs); // []
-
-    // 방법2
-    let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
-    // let abi = ['event Transfer(address indexed from, address to, uint256 indexed value)'];
-    let iface = new ethers.utils.Interface(abi);
-    console.log(iface);
-    const parsedEvents = infuraLogs.map(log => iface.parseLog(log));
-    console.log(parsedEvents);
   };
 
   return (
@@ -144,6 +130,10 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       <div className="input__wrapper">
         <label>New Address:</label>
         <div className="wallet--value">{wallet?.address}</div>
+      </div>
+      <div className="input__wrapper">
+        <label>Balance:</label>
+        <div className="wallet--value">{balance}</div>
       </div>
       <div className="input__wrapper">
         <label htmlFor="coinVal">To: </label>
