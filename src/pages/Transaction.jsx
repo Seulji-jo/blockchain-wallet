@@ -62,7 +62,7 @@ function Transaction() {
   return (
     <div className="row">
       <div>
-        <div>Tx List</div>
+        <div>CA Tx List</div>
         <input value={contractAddr} onChange={e => setContractAddr(e.target.value)} />
         <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
           {networkList.map(network => (

@@ -125,16 +125,13 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       const tx = await createTx(recipient);
       try {
         const sendTx = await signer.sendTransaction(tx);
-        console.dir(sendTx);
         const resTx = await provider.waitForTransaction(sendTx.hash);
-        console.log(resTx);
         if (resTx) {
           setIsClickedBtn(true);
           resetCoinVal();
           resetRecipient();
           alert('Send finished!');
         }
-        // getBalance();
       } catch (error) {
         console.log(error);
         alert('failed to send!!');
