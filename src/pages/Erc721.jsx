@@ -142,6 +142,7 @@ function Erc721() {
     <div>
       <div className="row">
         <div className="container__wallet wide">
+          <h4 className="title">Mint NFT</h4>
           <form className="row">
             <div className="input__wrapper">
               <label htmlFor="nftImg">🖼 image: </label>
@@ -160,7 +161,7 @@ function Erc721() {
                 )}
               </div>
             </div>
-            <div className="gap10">
+            <div className="column gap10">
               <div className="input__wrapper">
                 <label htmlFor="nftName">🤔 Name: </label>
                 <div className="input__row">
@@ -200,6 +201,7 @@ function Erc721() {
           )}
         </div>
         <div className="container__wallet">
+          <h4 className="title">Send NFT</h4>
           <div className="input__wrapper">
             <label htmlFor="from">From: </label>
             <div className="input__row">

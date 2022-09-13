@@ -61,23 +61,25 @@ function Transaction() {
 
   return (
     <div className="row">
-      <div>
-        <div>CA Tx List</div>
-        <input value={contractAddr} onChange={e => setContractAddr(e.target.value)} />
-        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-          {networkList.map(network => (
-            <option key={network.id} value={network.network}>
-              {network.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={getTxList}>Search</button>
+      <div className="container__wallet wide column gap10">
+        <h4 className="title">CA Tx List</h4>
+        <div className="row gap10">
+          <input value={contractAddr} onChange={e => setContractAddr(e.target.value)} />
+          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+            {networkList.map(network => (
+              <option key={network.id} value={network.network}>
+                {network.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={getTxList}>Search</button>
+        </div>
       </div>
-      <div>
-        <ul>
+      <div className="container__wallet wide height500">
+        <ul className="container__log">
           {logDetailList
             .map((log, i) => (
-              <li key={log.topic + i}>
+              <li key={log.topic + i} className="list__log">
                 <div>method: {log.name}</div>
                 <div>from Address: {log.args[0]}</div>
                 <div>to Address: {log.args[1]}</div>

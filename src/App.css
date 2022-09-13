@@ -50,7 +50,7 @@ nav>a.active::after {
 
 .App-main {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 62px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,6 +120,10 @@ form {
   gap: 10px;
 }
 
+h4.title {
+  padding-bottom: 30px;
+}
+
 /* colorPalette
 #EDF2F7
 #E4E8F4
@@ -130,13 +134,22 @@ form {
 
 .row {
   display: flex;
+  align-items: center;
   gap: 30px;
 }
 
-.gap10 {
+.column {
   display: flex;
   flex-direction: column;
+}
+
+.gap10 {
   gap: 10px;
+}
+
+.height500 {
+  height: 500px;
+  overflow-y: scroll;
 }
 
 .container__meta>* {
@@ -159,6 +172,7 @@ form {
 
 .container__wallet.wide {
   width: auto;
+  min-width: 400px;
 }
 
 .container__img {
@@ -210,4 +224,13 @@ form {
 
 .button__mint {
   align-self: flex-end;
+}
+
+.container__log {
+  height: 100%;
+}
+
+.list__log {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
