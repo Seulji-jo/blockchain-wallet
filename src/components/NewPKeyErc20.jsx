@@ -23,6 +23,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const [tokenBalance, setTokenBalace] = useState('');
   const [contract, setContract] = useState(null);
   const [symbol, setSymbol] = useState('');
+  const [isClickedBtn, setIsClickedBtn] = useState(false);
 
   useEffect(() => {
     const InfuraProvider = new ethers.providers.InfuraProvider(network.network);
@@ -48,6 +49,20 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     console.log(iface);
   }, [network]);
 
+  useEffect(() => {
+    if (newAddr || isClickedBtn) {
+      console.log('check');
+      getTokenBalance();
+    }
+    setIsClickedBtn(false);
+  }, [isClickedBtn, newAddr]);
+
+  const getTokenBalance = async () => {
+    const tokenBalance = await contract.balanceOf(newAddr);
+    setTokenBalace(ethers.utils.formatUnits(tokenBalance));
+    setSymbol(await contract.symbol());
+  };
+
   const createPrivateKey = () => {
     const buf = Buffer.from(randomBytes(32));
     const id = buf.toString('hex');
@@ -68,22 +83,12 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
     const walletSigner = wallet.connect(provider);
     const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, walletSigner);
-    console.log(contract);
     // const contractWProvider = contract.connect(provider);
     // console.log(contractWProvider);
-    const tokenBalance = await contract.balanceOf(addr);
-    const test = await contract.balanceOf('0xBAD9d82C5c83f487EbF14BFB4C23BF7719024663');
-    console.log(tokenBalance);
-    console.log(test);
-
-    console.log('publicKey: ' + publicKey);
-    console.log('addrFromPublic: ' + addrFromPublic);
 
     setWallet(wallet);
     setNewAddr(addr);
     setContract(contract);
-    setTokenBalace(ethers.utils.formatUnits(tokenBalance));
-    setSymbol(await contract.symbol());
   };
 
   const sendTxFromSigner = async () => {
@@ -99,28 +104,31 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   };
 
   const createTx = async recipient => {
-    console.log('provider: ');
-    console.log(provider);
     const currGasPrice = await provider.getGasPrice();
     const gasPrice = ethers.utils.hexlify(parseInt(currGasPrice));
     console.log(ethers.utils.parseUnits('5', 'gwei'));
     const gasLimit = ethers.utils.hexlify(21000);
     const value = ethers.utils.parseEther(coinVal);
     const nonce = await provider.getTransactionCount(newAddr, 'pending');
-    console.log('nonce: ' + nonce);
 
     const tx = { gasPrice, gasLimit, to: recipient, value, nonce };
-    console.log(tx);
     // const fullTx = await wallet.populateTransaction(tx);
     // console.log(fullTx);
     return tx;
   };
 
   const sendToken = async () => {
-    console.log(contract);
     // const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
     const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    console.log(tx);
+    const resTx = await provider.waitForTransaction(tx.hash);
+    console.log(resTx);
+    if (resTx) {
+      setIsClickedBtn(true);
+      resetCoinVal();
+      resetTokenBal();
+      resetRecipient();
+      alert('Send finished!');
+    }
   };
 
   const getMetaMaskAddr = () => {

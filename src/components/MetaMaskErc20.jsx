@@ -23,6 +23,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const [tokenBalance, setTokenBalace] = useState('');
   const [contract, setContract] = useState(null);
   const [symbol, setSymbol] = useState('');
+  const [isClickedBtn, setIsClickedBtn] = useState(false);
 
   const checkChainId = hexChainId => {
     // 0x3으로 보내야하는데 체인아이디를 hexString으로 바꾸면 0x03으로나와 거치는 단계
@@ -56,6 +57,20 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     if (metaMaskAddr) switchChainId();
   }, [network]);
 
+  useEffect(() => {
+    if (metaMaskAddr || isClickedBtn) {
+      console.log('check');
+      getTokenBalance();
+    }
+    setIsClickedBtn(false);
+  }, [isClickedBtn, metaMaskAddr]);
+
+  const getTokenBalance = async () => {
+    const tokenBalance = await contract.balanceOf(metaMaskAddr);
+    setTokenBalace(ethers.utils.formatUnits(tokenBalance));
+    setSymbol(await contract.symbol());
+  };
+
   const connetingMetaMask = async () => {
     if (ethereum) {
       try {
@@ -68,15 +83,12 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
 
         const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
         const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, signer);
-        const tokenBalance = await contract.balanceOf(providerAcct[0]);
 
         setProvider(provider);
         setMetaMaskAddr(providerAcct[0]);
         setSigner(signer);
         setBalance(balance);
         setContract(contract);
-        setTokenBalace(ethers.utils.formatUnits(tokenBalance));
-        setSymbol(await contract.symbol());
       } catch (err) {
         setErrMsg(err.massage);
       }
@@ -103,7 +115,15 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     // 따로 트랜젝션 생성하지 않고, Transfer함수를 사용한다.
     // transfer 함수 내에서 transaction을 만들어 보내주는 기능을 하는듯.
     const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
-    console.log(tx);
+    const resTx = await provider.waitForTransaction(tx.hash);
+    console.log(resTx);
+    if (resTx) {
+      setIsClickedBtn(true);
+      resetCoinVal();
+      resetTokenBal();
+      resetRecipient();
+      alert('Send finished!');
+    }
   };
 
   return (
