@@ -97,24 +97,24 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     if (!coinVal) {
       alert('Value를 입력해주세요');
     } else {
-      // 1. raw tx 생성
-      const rawTx = await createTx(recipient);
-      console.log('rawTx↴ ');
-      console.log(rawTx);
-      // 2. signing tx w/pKey
-      const signedTx = await wallet.signTransaction(rawTx);
-      console.log('signedTx: ' + signedTx);
-      // 3. sendTx
-      const sendTx = await provider.sendTransaction(signedTx);
-      const resTx = await provider.waitForTransaction(sendTx.hash);
-      if (resTx) {
-        setIsClickedBtn(true);
-        resetCoinVal();
-        resetRecipient();
-        alert('Send finished!');
+      try {
+        // 1. raw tx 생성
+        const rawTx = await createTx(recipient);
+        // 2. signing tx w/pKey
+        const signedTx = await wallet.signTransaction(rawTx);
+        // 3. sendTx
+        const sendTx = await provider.sendTransaction(signedTx);
+        const resTx = await provider.waitForTransaction(sendTx.hash);
+        if (resTx) {
+          setIsClickedBtn(true);
+          resetCoinVal();
+          resetRecipient();
+          alert('Send finished!');
+        }
+      } catch (error) {
+        console.log(error);
+        alert('failed to send!!');
       }
-      console.log('sendTx↴ ');
-      console.log(sendTx);
     }
   };
 
@@ -156,7 +156,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
         </div>
       </div>
 
-      <button onClick={sendTransaction}>send to Metamask</button>
+      <button onClick={sendTransaction}>Send</button>
     </div>
   );
 }
