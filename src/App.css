@@ -65,13 +65,14 @@ label {
 
 button,
 input,
-select {
+select,
+textarea {
   height: 34px;
   padding: 8px 12px;
+  font-family: 'Roboto', 'Noto Sans KR';
 }
 
 button {
-
   border: none;
   background-color: #B5C6B8;
 }
@@ -79,8 +80,8 @@ button {
 input,
 textarea {
   width: 250px;
-  border: none;
   border: 1px solid #48523d;
+  box-sizing: border-box;
   background-color: transparent;
 }
 
@@ -90,8 +91,9 @@ input[name="nftImg"] {
 }
 
 textarea {
-  height: 120px;
+  height: 145px;
   resize: none;
+
 }
 
 select {
@@ -112,7 +114,7 @@ option {
 
 form {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: flex-start;
   justify-content: center;
   gap: 10px;
@@ -131,6 +133,11 @@ form {
   gap: 30px;
 }
 
+.gap10 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .container__meta>* {
   padding: 20px 0;
@@ -150,7 +157,30 @@ form {
   gap: 10px;
 }
 
-.container__img {}
+.container__wallet.wide {
+  width: auto;
+}
+
+.container__img {
+  width: 250px;
+  position: relative;
+  border: 1px solid #48523d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container__img::after {
+  content: '';
+  display: block;
+  padding-bottom: 100%;
+}
+
+.container__img>* {
+  position: absolute;
+  width: 100%;
+  height: auto;
+}
 
 .wallet--value {
   width: 100%;
@@ -176,4 +206,8 @@ form {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.button__mint {
+  align-self: flex-end;
 }

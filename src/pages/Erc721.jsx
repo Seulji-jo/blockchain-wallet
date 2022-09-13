@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { uploadImg2Ipfs, sendJson2Ipfs } from '../api/index';
 import { ethers } from 'ethers';
@@ -9,6 +9,7 @@ import useAddressInput from '../hooks/useAddressInput';
 import useCoinInput from '../hooks/useCoinInput';
 
 function Erc721() {
+  const fileInput = useRef(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [imgFile, setImgFile] = useState(null);
@@ -30,6 +31,7 @@ function Erc721() {
     handleCoinVal: handleTokenId,
     resetCoinVal: resetTokenId,
   } = useCoinInput();
+  const [DragActive, setDragActive] = useState();
 
   const resetForm = () => {
     setName('');
@@ -42,6 +44,8 @@ function Erc721() {
 
   const handleImage = async e => {
     const [imgData] = e.target.files;
+    console.log(imgData);
+    console.log(URL.createObjectURL(imgData));
     if (imgData) {
       URL.revokeObjectURL(prevImg);
       setImgFile(imgData);
@@ -103,6 +107,33 @@ function Erc721() {
     }
   }, [tokenUri]);
 
+  const handleFileInput = () => {
+    console.log(fileInput);
+    fileInput.current;
+    fileInput.current.click();
+  };
+
+  const handleDrag = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+  const handleDrop = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const [imgData] = e.dataTransfer.files;
+    if (imgData) {
+      URL.revokeObjectURL(prevImg);
+      setImgFile(imgData);
+      setPrevImg(URL.createObjectURL(imgData));
+    }
+  };
   useEffect(() => {
     mintNft();
   }, [mintNft]);
@@ -110,42 +141,57 @@ function Erc721() {
   return (
     <div>
       <div className="row">
-        <div className="container__wallet">
-          <form>
+        <div className="container__wallet wide">
+          <form className="row">
             <div className="input__wrapper">
               <label htmlFor="nftImg">🖼 image: </label>
-              <input type="file" name="nftImg" />
-              <div className="container__img">
-                <img src={imgFile} alt="nft image" />
+              <input type="file" name="nftImg" ref={fileInput} onChange={handleImage} />
+              <div
+                className="container__img"
+                onClick={handleFileInput}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}>
+                {imgFile ? (
+                  <img src={prevImg} alt={imgFile?.name ?? 'NFT Image'} />
+                ) : (
+                  <div>Select a file or drag here</div>
+                )}
               </div>
             </div>
-            <div className="input__wrapper">
-              <label htmlFor="nftName">🤔 Name: </label>
-              <div className="input__row">
-                <input
-                  type="text"
-                  name="nftName"
-                  placeholder="e.g. My first NFT!"
-                  value={name}
-                  onChange={event => setName(event.target.value)}
-                />
+            <div className="gap10">
+              <div className="input__wrapper">
+                <label htmlFor="nftName">🤔 Name: </label>
+                <div className="input__row">
+                  <input
+                    type="text"
+                    name="nftName"
+                    placeholder="e.g. My first NFT!"
+                    value={name}
+                    onChange={event => setName(event.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="input__wrapper">
-              <label htmlFor="nftDesc">✍️ Description: </label>
-              <div className="input__row">
-                <textarea
-                  name="nftDesc"
-                  placeholder="e.g. Even cooler than cryptokitties ;)"
-                  value={description}
-                  onChange={event => setDescription(event.target.value)}
-                />
+              <div className="input__wrapper">
+                <label htmlFor="nftDesc">✍️ Description: </label>
+                <div className="input__row">
+                  <textarea
+                    name="nftDesc"
+                    placeholder="e.g. Even cooler than cryptokitties ;)"
+                    value={description}
+                    onChange={event => setDescription(event.target.value)}
+                  />
+                </div>
               </div>
+              <button
+                className="button__mint"
+                onClick={handleUploadNft}
+                disabled={!imgFile || !name || !description}>
+                Mint
+              </button>
             </div>
           </form>
-          <button onClick={handleUploadNft} disabled={!imgFile || !name || !description}>
-            Mint
-          </button>
 
           {txHash && (
             <a href={`https://ropsten.etherscan.io/tx/${txHash}`} target="_blank" rel="noreferrer">
