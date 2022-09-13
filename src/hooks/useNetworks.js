@@ -13,9 +13,7 @@ function useNetworks(initialState = { id: 3, network: 'ropsten', name: 'ropsten'
   ];
 
   const handleNetwork = useCallback(e => {
-    console.log(e.target.value);
     const choosingNetwork = networkList.filter(network => e.target.value === network.network);
-    console.log(choosingNetwork);
     setNetwork(choosingNetwork[0]);
   }, []);
 

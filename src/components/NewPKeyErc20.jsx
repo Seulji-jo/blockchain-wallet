@@ -37,21 +37,10 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     const etherProvider = new ethers.providers.EtherscanProvider(network.network);
 
     setProvider(InfuraProvider);
-    const getHistory = async () => {
-      // 방법3
-      const history = await etherProvider.getHistory('0x33Ddacb5bed0F44B1Cf87626D7a3F64B86aF8752');
-      console.log(history);
-    };
-    getHistory();
-
-    let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
-    let iface = new ethers.utils.Interface(abi);
-    console.log(iface);
   }, [network]);
 
   useEffect(() => {
     if (newAddr || isClickedBtn) {
-      console.log('check');
       getTokenBalance();
     }
     setIsClickedBtn(false);
@@ -71,7 +60,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   };
 
   const createWalletInstance = async pKey => {
-    console.log('pKey: ' + pKey);
     const privateKey = process.env.REACT_APP_PRIVATE_KEY;
     const wallet = new ethers.Wallet(privateKey);
     const addr = ethers.utils.computeAddress(privateKey);
@@ -79,7 +67,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     const addrFromPublic = ethers.utils.computeAddress(publicKey);
 
     const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
-    console.log(contractAddr);
 
     const walletSigner = wallet.connect(provider);
     const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, walletSigner);
@@ -106,7 +93,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const createTx = async recipient => {
     const currGasPrice = await provider.getGasPrice();
     const gasPrice = ethers.utils.hexlify(parseInt(currGasPrice));
-    console.log(ethers.utils.parseUnits('5', 'gwei'));
     const gasLimit = ethers.utils.hexlify(21000);
     const value = ethers.utils.parseEther(coinVal);
     const nonce = await provider.getTransactionCount(newAddr, 'pending');
@@ -121,7 +107,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     // const txFrom = await contract.transferFrom(newAddr, sendAddr, tokenBal);
     const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
     const resTx = await provider.waitForTransaction(tx.hash);
-    console.log(resTx);
     if (resTx) {
       setIsClickedBtn(true);
       resetCoinVal();

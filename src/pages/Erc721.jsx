@@ -44,8 +44,6 @@ function Erc721() {
 
   const handleImage = async e => {
     const [imgData] = e.target.files;
-    console.log(imgData);
-    console.log(URL.createObjectURL(imgData));
     if (imgData) {
       URL.revokeObjectURL(prevImg);
       setImgFile(imgData);
@@ -98,7 +96,6 @@ function Erc721() {
         // const uri = `ipfs://${tokenUri}`;
         // ipfs를 붙여 민팅을 하게 되면 메타마스크에서 이미지가 나타나지 않는다.
         const mintingNft = await contract.safeMint(providerSigner.address, tokenUri);
-        console.log(mintingNft);
         setTxHash(mintingNft.hash);
         resetForm();
       } catch (error) {
@@ -108,7 +105,6 @@ function Erc721() {
   }, [tokenUri]);
 
   const handleFileInput = () => {
-    console.log(fileInput);
     fileInput.current;
     fileInput.current.click();
   };

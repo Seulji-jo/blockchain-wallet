@@ -35,7 +35,6 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: checkChainId(hexChainID) }],
         });
-        console.log(resSwitchChain);
         if (provider) {
           const bigNumBalance = await provider.getBalance(metaMaskAddr);
           const balance = ethers.utils.formatUnits(bigNumBalance);
@@ -55,7 +54,6 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
 
   useEffect(() => {
     if (provider || isClickedBtn) {
-      console.log('check');
       getBalance();
     }
     setIsClickedBtn(false);
@@ -65,7 +63,6 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
     const providerAcct = await provider.send('eth_requestAccounts');
     const bigNumBalance = await provider.getBalance(providerAcct[0]);
     const balance = ethers.utils.formatUnits(bigNumBalance);
-    console.log(balance);
     setBalance(balance);
   };
 

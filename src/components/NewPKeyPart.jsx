@@ -32,7 +32,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
   useEffect(() => {
     if (newAddr || isClickedBtn) {
-      console.log('check');
       getBalance();
     }
     setIsClickedBtn(false);
@@ -46,13 +45,11 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   };
 
   const createWalletInstance = async pKey => {
-    console.log('pKey: ' + pKey);
     const privateKey = process.env.REACT_APP_PRIVATE_KEY;
     const wallet = new ethers.Wallet(privateKey);
     const addr = ethers.utils.computeAddress(privateKey);
     const publicKey = ethers.utils.computePublicKey(privateKey);
     const addrFromPublic = ethers.utils.computeAddress(publicKey);
-    console.log(addrFromPublic);
 
     setWallet(wallet);
     setNewAddr(addr);
@@ -61,7 +58,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const getBalance = async () => {
     const bigNumBalance = await provider.getBalance(newAddr);
     const balance = ethers.utils.formatUnits(bigNumBalance);
-    console.log(balance);
     setBalance(balance);
   };
 
@@ -73,7 +69,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const createTx = async recipient => {
     const currGasPrice = await provider.getGasPrice();
     const gasPrice = ethers.utils.hexlify(parseInt(currGasPrice));
-    console.log(ethers.utils.parseUnits('5', 'gwei'));
     const gasLimit = ethers.utils.hexlify(21000);
     const value = ethers.utils.parseEther(coinVal);
     const nonce = await provider.getTransactionCount(newAddr, 'pending');

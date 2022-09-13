@@ -25,7 +25,6 @@ function Transaction() {
       iface = new ethers.utils.Interface(abi);
     }
     const parsedEvents = logList.map(log => iface.parseLog(log));
-    console.log(parsedEvents);
     const changeLogs = parsedEvents.map(log => {
       const { name: eventName } = log.eventFragment;
       const { inputs } = log.eventFragment;
@@ -44,7 +43,6 @@ function Transaction() {
       newLog = { ...log, args };
       return newLog;
     });
-    console.log(changeLogs);
     setLogDetailList(changeLogs);
   }, [logList]);
 
@@ -56,7 +54,6 @@ function Transaction() {
     };
     const logs = await provider.getLogs(filter);
     setLogList(logs);
-    console.log(logs);
   };
 
   return (

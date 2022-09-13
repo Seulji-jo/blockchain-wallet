@@ -39,7 +39,6 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: checkChainId(hexChainID) }],
         });
-        console.log(resSwitchChain);
         if (provider) {
           const bigNumBalance = await provider.getBalance(metaMaskAddr);
           const balance = ethers.utils.formatUnits(bigNumBalance);
@@ -59,7 +58,6 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
 
   useEffect(() => {
     if (metaMaskAddr || isClickedBtn) {
-      console.log('check');
       getTokenBalance();
     }
     setIsClickedBtn(false);
@@ -111,12 +109,10 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   };
 
   const sendToken = async () => {
-    console.log(tokenBal);
     // 따로 트랜젝션 생성하지 않고, Transfer함수를 사용한다.
     // transfer 함수 내에서 transaction을 만들어 보내주는 기능을 하는듯.
     const tx = await contract.transfer(sendAddr, parseUnits(tokenBal));
     const resTx = await provider.waitForTransaction(tx.hash);
-    console.log(resTx);
     if (resTx) {
       setIsClickedBtn(true);
       resetCoinVal();

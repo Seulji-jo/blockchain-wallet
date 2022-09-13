@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const uploadImg2Ipfs = async data => {
-  console.log(data);
   const url = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
 
   try {
@@ -13,7 +12,6 @@ const uploadImg2Ipfs = async data => {
         Authorization: `Bearer ${process.env.REACT_APP_PINATA_JWT}`,
       },
     });
-    console.log(res);
 
     return res;
   } catch (error) {
