@@ -7,6 +7,9 @@ import useCoinInput from '../hooks/useCoinInput';
 import useNetworks from '../hooks/useNetworks';
 import useAddressInput from '../hooks/useAddressInput';
 
+import GivenDataForm from './common/GivenDataForm';
+import InputForm from './common/InputForm';
+
 function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   const { network, networkList, handleNetwork } = useNetworks();
   const { coinVal, handleCoinVal, resetCoinVal } = useCoinInput();
@@ -35,7 +38,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       getBalance();
     }
     setIsClickedBtn(false);
-  }, [isClickedBtn, newAddr]);
+  }, [isClickedBtn, newAddr, provider]);
 
   const createPrivateKey = () => {
     const buf = Buffer.from(randomBytes(32));
@@ -118,39 +121,21 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       <button onClick={createPrivateKey} disabled={wallet?.privateKey}>
         New Private Key 생성
       </button>
-      <div className="input__wrapper">
-        <label>New Private Key:</label>
-        <div className="wallet--value wallet--pkey">{wallet?.privateKey}</div>
-      </div>
-      <div className="input__wrapper">
-        <label>New Address:</label>
-        <div className="wallet--value">{wallet?.address}</div>
-      </div>
-      <div className="input__wrapper">
-        <label>Balance:</label>
-        <div className="wallet--value">{balance}</div>
-      </div>
-      <div className="input__wrapper">
-        <label htmlFor="coinVal">To: </label>
-        <div className="input__row">
-          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-          <button onClick={getMetaMaskAddr}>메타마스크</button>
-        </div>
-      </div>
-      <div className="input__wrapper">
-        <label htmlFor="coinVal">Value: </label>
-        <div className="input__row">
-          <input type="text" name="coinVal" onChange={handleCoinVal} value={coinVal} />
-          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-            {networkList.map(network => (
-              <option key={network.id} value={network.network}>
-                {network.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
+      <GivenDataForm label={'New Private Key'} value={wallet?.privateKey} />
+      <GivenDataForm label={'New Address'} value={wallet?.address} />
+      <GivenDataForm label={'Balance'} value={balance} />
+      <InputForm label={'To'} onChange={handleRecipient}>
+        <button onClick={getMetaMaskAddr}>메타마스크</button>
+      </InputForm>
+      <InputForm label={'Value'} onChange={handleCoinVal}>
+        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+          {networkList.map(network => (
+            <option key={network.id} value={network.network}>
+              {network.name}
+            </option>
+          ))}
+        </select>
+      </InputForm>
       <button onClick={sendTransaction}>Send</button>
     </div>
   );

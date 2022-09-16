@@ -3,11 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useAddressInput from '../hooks/useAddressInput';
 import useCoinInput from '../hooks/useCoinInput';
 import useNetworks from '../hooks/useNetworks';
-import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
+
+import GivenDataForm from './common/GivenDataForm';
+import InputForm from './common/InputForm';
 
 function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const { ethereum } = window;
-  const { network, networkList, handleNetwork } = useNetworks();
+  const { network, setNetwork, networkList, handleNetwork } = useNetworks();
   const { coinVal, handleCoinVal, resetCoinVal } = useCoinInput();
   const {
     coinVal: tokenBal,
@@ -29,23 +31,25 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
 
   useEffect(() => {
     async function switchChainId() {
-      const hexChainID = ethers.utils.hexlify(network.id);
-      try {
-        const resSwitchChain = await ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: checkChainId(hexChainID) }],
-        });
-        if (provider) {
-          const bigNumBalance = await provider.getBalance(metaMaskAddr);
-          const balance = ethers.utils.formatUnits(bigNumBalance);
-          setBalance(balance);
-        }
-      } catch (error) {
-        if (error.code === 4902) {
-          console.error('This network is not found in your network!');
-          // 다른 이유로 네트워크를 변경하지 못했을 때 처리
-        } else {
-          console.error(error);
+      if (metaMaskAddr) {
+        const hexChainID = ethers.utils.hexlify(network.id);
+        try {
+          const resSwitchChain = await ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: checkChainId(hexChainID) }],
+          });
+          if (provider) {
+            const bigNumBalance = await provider.getBalance(metaMaskAddr);
+            const balance = ethers.utils.formatUnits(bigNumBalance);
+            setBalance(balance);
+          }
+        } catch (error) {
+          if (error.code === 4902) {
+            console.error('This network is not found in your network!');
+            // 다른 이유로 네트워크를 변경하지 못했을 때 처리
+          } else {
+            console.error(error);
+          }
         }
       }
     }
@@ -88,12 +92,16 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const connetingMetaMask = async () => {
     if (ethereum) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any');
         const signer = provider.getSigner();
         const providerAcct = await provider.send('eth_requestAccounts');
+        const currChain = await ethereum.request({ method: 'eth_chainId' });
+        const network = networkList.filter(li => li.id === parseInt(currChain, 16));
+
         setProvider(provider);
         setMetaMaskAddr(providerAcct[0]);
         setSigner(signer);
+        setNetwork(network[0]);
       } catch (err) {
         setErrMsg(err.massage);
       }
@@ -141,36 +149,21 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
-      <div className="input__wrapper">
-        <label>MetaMask Address:</label>
-        <div className="wallet--value">{metaMaskAddr}</div>
-      </div>
-      <div className="input__wrapper">
-        <label>Balance:</label>
-        <div className="wallet--value">{balance}</div>
-      </div>
-      <div className="input__wrapper">
-        <label htmlFor="coinVal">To: </label>
-        <div className="input__row">
-          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-          <button onClick={getPkeyAddr}>PKey Addr</button>
-        </div>
-      </div>
-      <div className="input__wrapper">
-        <label htmlFor="coinVal">Value: </label>
-        <div className="input__row">
-          <input type="text" name="coinVal" value={coinVal} onChange={handleCoinVal} />
-          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
-            {networkList.map(network => (
-              <option key={network.id} value={network.network}>
-                {network.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <button onClick={() => sendTransaction()}>Send</button>
+      <GivenDataForm label={'MetaMask Address'} value={metaMaskAddr} />
+      <GivenDataForm label={'Balance'} value={balance} />
+      <InputForm label={'To'} onChange={handleRecipient}>
+        <button onClick={getPkeyAddr}>PKey Addr</button>
+      </InputForm>
+      <InputForm label={'Value'} onChange={handleCoinVal}>
+        <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+          {networkList.map(network => (
+            <option key={network.id} value={network.network}>
+              {network.name}
+            </option>
+          ))}
+        </select>
+      </InputForm>
+      <button onClick={sendTransaction}>Send</button>
     </div>
   );
 }
