@@ -127,29 +127,29 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
-      <div className="input__wrapper">
+      <div className="wallet-data__wrapper">
         <label>MetaMask Address:</label>
         <div className="wallet--value">{metaMaskAddr}</div>
       </div>
-      <div className="input__wrapper">
+      <div className="wallet-data__wrapper">
         <label>Balance:</label>
         <div className="wallet--value">{balance}</div>
       </div>
-      <div className="input__wrapper">
+      <div className="wallet-data__wrapper">
         <label className="token">Token</label>
         <div className="wallet--value">
           {tokenBalance}
           <span> {symbol}</span>
         </div>
       </div>
-      <div className="input__wrapper">
+      <div className="wallet-data__wrapper">
         <label htmlFor="coinVal">To: </label>
         <div className="input__row">
           <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
           <button onClick={getPkeyAddr}>PKey Addr</button>
         </div>
       </div>
-      <div className="input__wrapper">
+      <div className="wallet-data__wrapper">
         <label htmlFor="tokenBal">Value: </label>
         <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
       </div>

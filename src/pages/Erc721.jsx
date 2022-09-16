@@ -140,7 +140,7 @@ function Erc721() {
         <div className="container__wallet wide">
           <h4 className="title">Mint NFT</h4>
           <form className="row">
-            <div className="input__wrapper">
+            <div className="wallet-data__wrapper">
               <label htmlFor="nftImg">🖼 image: </label>
               <input type="file" name="nftImg" ref={fileInput} onChange={handleImage} />
               <div
@@ -158,7 +158,7 @@ function Erc721() {
               </div>
             </div>
             <div className="column gap10">
-              <div className="input__wrapper">
+              <div className="wallet-data__wrapper">
                 <label htmlFor="nftName">🤔 Name: </label>
                 <div className="input__row">
                   <input
@@ -170,7 +170,7 @@ function Erc721() {
                   />
                 </div>
               </div>
-              <div className="input__wrapper">
+              <div className="wallet-data__wrapper">
                 <label htmlFor="nftDesc">✍️ Description: </label>
                 <div className="input__row">
                   <textarea
@@ -198,19 +198,19 @@ function Erc721() {
         </div>
         <div className="container__wallet">
           <h4 className="title">Send NFT</h4>
-          <div className="input__wrapper">
+          <div className="wallet-data__wrapper">
             <label htmlFor="from">From: </label>
             <div className="input__row">
               <input type="text" name="from" value={fromAddr} onChange={handleFromAddr} />
             </div>
           </div>
-          <div className="input__wrapper">
+          <div className="wallet-data__wrapper">
             <label htmlFor="to">To: </label>
             <div className="input__row">
               <input type="text" name="to" value={toAddr} onChange={handleToAddr} />
             </div>
           </div>
-          <div className="input__wrapper">
+          <div className="wallet-data__wrapper">
             <label htmlFor="tokenId">Token Id: </label>
             <div className="input__row">
               <input type="text" name="tokenId" value={tokenId} onChange={handleTokenId} />
