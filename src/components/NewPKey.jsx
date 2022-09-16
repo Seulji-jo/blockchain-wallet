@@ -10,7 +10,7 @@ import useAddressInput from '../hooks/useAddressInput';
 import GivenDataForm from './common/GivenDataForm';
 import InputForm from './common/InputForm';
 
-function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
+function NewPKey({ sendAddr, newAddr, setNewAddr }) {
   const { network, networkList, handleNetwork } = useNetworks();
   const { coinVal, handleCoinVal, resetCoinVal } = useCoinInput();
   const { recipient, handleRecipient, resetRecipient } = useAddressInput();
@@ -44,6 +44,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     const buf = Buffer.from(randomBytes(32));
     const id = buf.toString('hex');
     const pKey = `0x${id}`;
+    console.log(pKey);
     createWalletInstance(pKey);
   };
 
@@ -141,4 +142,4 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
   );
 }
 
-export default NewPKeyPart;
+export default NewPKey;

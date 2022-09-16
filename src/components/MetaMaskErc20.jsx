@@ -6,6 +6,9 @@ import useNetworks from '../hooks/useNetworks';
 import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
 import { parseUnits } from 'ethers/lib/utils';
 
+import GivenDataForm from './common/GivenDataForm';
+import InputForm from './common/InputForm';
+
 function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   const { ethereum } = window;
   const { network, networkList, handleNetwork } = useNetworks();
@@ -127,32 +130,13 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
-      <div className="wallet-data__wrapper">
-        <label>MetaMask Address:</label>
-        <div className="wallet--value">{metaMaskAddr}</div>
-      </div>
-      <div className="wallet-data__wrapper">
-        <label>Balance:</label>
-        <div className="wallet--value">{balance}</div>
-      </div>
-      <div className="wallet-data__wrapper">
-        <label className="token">Token</label>
-        <div className="wallet--value">
-          {tokenBalance}
-          <span> {symbol}</span>
-        </div>
-      </div>
-      <div className="wallet-data__wrapper">
-        <label htmlFor="coinVal">To: </label>
-        <div className="input__row">
-          <input type="text" name="coinVal" value={recipient} onChange={handleRecipient} />
-          <button onClick={getPkeyAddr}>PKey Addr</button>
-        </div>
-      </div>
-      <div className="wallet-data__wrapper">
-        <label htmlFor="tokenBal">Value: </label>
-        <input type="text" name="tokenBal" value={tokenBal} onChange={handleTokenBal} />
-      </div>
+      <GivenDataForm label={'MetaMask Address'} value={metaMaskAddr} />
+      <GivenDataForm label={'Balance'} value={balance} />
+      <GivenDataForm label={'Token'} value={tokenBalance} symbol={symbol} />
+      <InputForm label={'To'} onChange={handleRecipient}>
+        <button onClick={getPkeyAddr}>PKey Addr</button>
+      </InputForm>
+      <InputForm label={'Value'} onChange={handleTokenBal} />
       <button onClick={sendToken}>Send</button>
     </div>
   );

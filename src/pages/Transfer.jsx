@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MetaMaskApp from '../components/MetaMaskApp';
-import NewPKeyPart from '../components/NewPKeyPart';
+import NewPKey from '../components/NewPKey';
 
 function Transfer() {
   const [metaMaskAddr, setMetaMaskAddr] = useState('');
@@ -13,7 +13,7 @@ function Transfer() {
         metaMaskAddr={metaMaskAddr}
         setMetaMaskAddr={setMetaMaskAddr}
       />
-      <NewPKeyPart sendAddr={metaMaskAddr} newAddr={newAddr} setNewAddr={setNewAddr} />
+      <NewPKey sendAddr={metaMaskAddr} newAddr={newAddr} setNewAddr={setNewAddr} />
     </div>
   );
 }
