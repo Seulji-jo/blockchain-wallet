@@ -169,7 +169,7 @@ h4.title {
 }
 
 .container__wallet {
-  width: 400px;
+  width: 500px;
   padding: 60px 40px;
   white-space: pre-line;
   word-break: break-all;
@@ -184,7 +184,7 @@ h4.title {
 
 .container__wallet.wide {
   width: auto;
-  min-width: 400px;
+  min-width: 500px;
 }
 
 .container__img {

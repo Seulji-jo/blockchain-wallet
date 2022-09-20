@@ -10,7 +10,7 @@ function InputForm({ label = '', value = '', onChange, children }) {
 
   return (
     <div className="wallet-data__wrapper">
-      {label ?? (
+      {label && (
         <label className="wallet--label" htmlFor="inputVal">
           {label}:
         </label>

@@ -118,7 +118,7 @@ function NewPKey({ sendAddr, newAddr, setNewAddr }) {
   };
 
   return (
-    <div className="container__wallet">
+    <section className="container__wallet">
       <button onClick={createPrivateKey} disabled={wallet?.privateKey}>
         New Private Key 생성
       </button>
@@ -138,7 +138,7 @@ function NewPKey({ sendAddr, newAddr, setNewAddr }) {
         </select>
       </InputForm>
       <button onClick={sendTransaction}>Send</button>
-    </div>
+    </section>
   );
 }
 

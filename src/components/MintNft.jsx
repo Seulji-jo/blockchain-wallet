@@ -102,7 +102,7 @@ function MintNft() {
   }, [mintNft]);
 
   return (
-    <div className="container__wallet wide">
+    <section className="container__wallet wide">
       <h4 className="title">Mint NFT</h4>
       <form className="row">
         <div className="wallet-data__wrapper">
@@ -159,7 +159,7 @@ function MintNft() {
           Mint
         </button>
       </div>
-    </div>
+    </section>
   );
 }
 

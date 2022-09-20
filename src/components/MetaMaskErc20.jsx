@@ -126,7 +126,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
   };
 
   return (
-    <div className="container__wallet">
+    <section className="container__wallet">
       <button onClick={connetingMetaMask} disabled={metaMaskAddr}>
         Meta Mask 연결
       </button>
@@ -138,7 +138,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
       </InputForm>
       <InputForm label={'Value'} onChange={handleTokenBal} />
       <button onClick={sendToken}>Send</button>
-    </div>
+    </section>
   );
 }
 

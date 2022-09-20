@@ -132,7 +132,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
       <GivenDataForm label={'New Private Key'} value={wallet?.privateKey} />
       <GivenDataForm label={'New Address'} value={wallet?.address} />
       <GivenDataForm label={'Token'} value={tokenBalance} symbol={symbol} />
-      <InputForm label={'To'} onChange={handleRecipient}>
+      <InputForm label={'To'} value={recipient} onChange={handleRecipient}>
         <button onClick={getMetaMaskAddr}>메타마스크</button>
       </InputForm>
       <InputForm label={'Value'} onChange={handleTokenBal} />

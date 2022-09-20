@@ -47,19 +47,15 @@ function SendNft() {
   };
 
   return (
-    <div>
-      <div className="row">
-        <div className="container__wallet">
-          <h4 className="title">Send NFT</h4>
-          <InputForm label={'From'} onChange={handleFromAddr} />
-          <InputForm label={'To'} onChange={handleToAddr} />
-          <InputForm label={'Token Id'} onChange={handleTokenId} />
-          <button onClick={handleTransferNft} disabled={!fromAddr || !toAddr || !tokenId}>
-            send
-          </button>
-        </div>
-      </div>
-    </div>
+    <section className="container__wallet">
+      <h4 className="title">Send NFT</h4>
+      <InputForm label={'From'} onChange={handleFromAddr} />
+      <InputForm label={'To'} onChange={handleToAddr} />
+      <InputForm label={'Token Id'} onChange={handleTokenId} />
+      <button onClick={handleTransferNft} disabled={!fromAddr || !toAddr || !tokenId}>
+        send
+      </button>
+    </section>
   );
 }
 
