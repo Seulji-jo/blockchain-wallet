@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import useNetworks from '../hooks/useNetworks';
 import HannahNftAbi from '../contracts/HannahNftAbi.json';
+import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
+
+import GivenDataForm from '../components/common/GivenDataForm';
+import InputForm from '../components/common/InputForm';
 
 function Transaction() {
   const { network, networkList, handleNetwork } = useNetworks();
@@ -18,11 +22,12 @@ function Transaction() {
 
   useEffect(() => {
     let iface;
+    // 임의로 설정한 방법
     if (logList[0]?.data === '0x') {
       iface = new ethers.utils.Interface(HannahNftAbi);
     } else {
-      let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
-      iface = new ethers.utils.Interface(abi);
+      // let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
+      iface = new ethers.utils.Interface(HannahFirstTokenAbi);
     }
     const parsedEvents = logList.map(log => iface.parseLog(log));
     const changeLogs = parsedEvents.map(log => {
@@ -43,6 +48,7 @@ function Transaction() {
       newLog = { ...log, args };
       return newLog;
     });
+    console.log(changeLogs);
     setLogDetailList(changeLogs);
   }, [logList]);
 
@@ -53,15 +59,15 @@ function Transaction() {
       toBlock: 'latest',
     };
     const logs = await provider.getLogs(filter);
+    console.log(logs);
     setLogList(logs);
   };
 
   return (
     <div className="row">
-      <div className="container__wallet wide column gap10">
+      <section className="container__wallet wide column gap10">
         <h4 className="title">CA Tx List</h4>
-        <div className="row gap10">
-          <input value={contractAddr} onChange={e => setContractAddr(e.target.value)} />
+        <InputForm value={contractAddr} onChange={e => setContractAddr(e.target.value)}>
           <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
             {networkList.map(network => (
               <option key={network.id} value={network.network}>
@@ -70,27 +76,24 @@ function Transaction() {
             ))}
           </select>
           <button onClick={getTxList}>Search</button>
-        </div>
-      </div>
-      <div className="container__wallet wide height500">
+        </InputForm>
+      </section>
+      <section className="container__wallet wide height500">
         <ul className="container__log">
           {logDetailList
             .map((log, i) => (
               <li key={log.topic + i} className="list__log">
-                <div>method: {log.name}</div>
-                <div>from Address: {log.args[0]}</div>
-                <div>to Address: {log.args[1]}</div>
+                <GivenDataForm label={'method'} value={log.name} />
+                <GivenDataForm label={'from Address'} value={log.args[0]} />
+                <GivenDataForm label={'to Address'} value={log.args[1]} />
                 {log.args[2] && (
-                  <div>
-                    {isErc20 ? 'value' : 'tokenId'}: {log.args[2]}
-                  </div>
+                  <GivenDataForm label={isErc20 ? 'value' : 'tokenId'} value={log.args[2]} />
                 )}
-                {/* <div>tokenId: {log.args[2].toNumber()}</div> */}
               </li>
             ))
             .reverse()}
         </ul>
-      </div>
+      </section>
     </div>
   );
 }
