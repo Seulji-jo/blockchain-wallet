@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function InputForm({ label = '', value = '', onChange, children }) {
+function InputForm({ label = '', name = '', value = '', onChange, children }) {
   const [inputVal, setInputVal] = useState(value);
 
   const handleInputVal = e => {
@@ -16,7 +16,12 @@ function InputForm({ label = '', value = '', onChange, children }) {
         </label>
       )}
       <div className="input__row">
-        <input type="text" name="inputVal" value={value ?? inputVal} onChange={handleInputVal} />
+        <input
+          type="text"
+          name={name ?? 'inputVal'}
+          value={value ?? inputVal}
+          onChange={handleInputVal}
+        />
         {children}
       </div>
     </div>
