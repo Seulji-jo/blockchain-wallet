@@ -6,10 +6,8 @@ function useBalance(provider) {
 
   const getBalance = useCallback(
     async address => {
-      console.log(address);
       const bigNumBalance = await provider.getBalance(address);
       const balance = utils.formatUnits(bigNumBalance);
-      console.log(balance);
       setBalance(balance);
     },
     [provider]
