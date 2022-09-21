@@ -143,6 +143,7 @@ h4.title {
 .column {
   display: flex;
   flex-direction: column;
+  gap: 30px;
 
 }
 
