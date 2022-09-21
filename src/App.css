@@ -212,8 +212,13 @@ h4.title {
 .wallet--value {
   width: 100%;
   height: 30px;
+  font-size: 14px;
   line-height: 30px;
   border-bottom: 1px solid #48523d;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .wallet-data__wrapper {
@@ -228,13 +233,6 @@ h4.title {
   align-items: center;
   gap: 10px;
 }
-
-.wallet--pkey {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
 
 .container__log {
   height: 100%;
