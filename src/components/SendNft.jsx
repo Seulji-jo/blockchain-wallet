@@ -9,7 +9,7 @@ function SendNft() {
   const { input, handleInput, resetInput } = useInput();
 
   const getSigner = () => {
-    const pKey = '0x15b3eed746443d676410608e93459026a560672cd2032a719cfa2137caa06a80';
+    const pKey = process.env.REACT_APP_PRIVATE_KEY;
     const wallet = new ethers.Wallet(pKey);
     const provider = new ethers.providers.InfuraProvider('ropsten');
     return wallet.connect(provider);

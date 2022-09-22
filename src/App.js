@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
-import { ethers } from 'ethers';
-import { randomBytes } from 'ethers/lib/utils';
-import { Buffer } from 'buffer';
-// import { randomBytes } from 'crypto';
-// import createPrivateKey from './utils';
+import React from 'react';
+import { NavLink, Routes, Route } from 'react-router-dom';
+
 import './App.css';
-import axios from 'axios';
-import Erc20 from './pages/Erc20';
 import Transfer from './pages/Transfer';
+import Erc20 from './pages/Erc20';
 import Erc721 from './pages/Erc721';
 import Transaction from './pages/Transaction';
 

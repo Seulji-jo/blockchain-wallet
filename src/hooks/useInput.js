@@ -5,7 +5,8 @@ function useInput(initialState = {}) {
   const [input, setInput] = useState(initialState);
 
   const handleInput = useCallback(e => {
-    setInput(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setInput(prev => ({ ...prev, [name]: value }));
   }, []);
 
   const changeInput = useCallback((key, val) => {

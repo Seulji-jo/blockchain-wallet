@@ -30,8 +30,6 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
 
     const walletSigner = wallet.connect(provider);
     const contract = new Contract(contractAddr, HannahFirstTokenAbi, walletSigner);
-    // const contractWProvider = contract.connect(provider);
-    // console.log(contractWProvider);
 
     setWallet(wallet);
     setNewAddr(addr);
