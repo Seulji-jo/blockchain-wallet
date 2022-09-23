@@ -4,16 +4,35 @@ import useNetworks from '../hooks/useNetworks';
 import HannahNftAbi from '../contracts/HannahNftAbi.json';
 import HannahFirstTokenAbi from '../contracts/HannahFirstTokenAbi.json';
 
-import GivenDataForm from '../components/common/GivenDataForm';
+import useInput from '../hooks/useInput';
+
 import InputForm from '../components/common/InputForm';
+import TransactionList from '../components/TransactionList';
 
 function Transaction() {
-  const { network, networkList, handleNetwork } = useNetworks();
-  const [contractAddr, setContractAddr] = useState('0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0');
   const [provider, setProvider] = useState('');
   const [logList, setLogList] = useState([]);
   const [logDetailList, setLogDetailList] = useState([]);
   const [isErc20, setIsErc20] = useState(true);
+
+  const { network, networkList, handleNetwork } = useNetworks();
+  const { input, handleInput, changeInput } = useInput();
+
+  const getTxList = async () => {
+    const filter = {
+      address: input.address,
+      fromBlock: 0,
+      toBlock: 'latest',
+    };
+
+    const logs = await provider.getLogs(filter);
+
+    setLogList(logs);
+  };
+
+  useEffect(() => {
+    changeInput('address', process.env.REACT_APP_ERC20_CONTRACT);
+  }, [changeInput]);
 
   useEffect(() => {
     const etherProvider = new ethers.providers.EtherscanProvider(network.network);
@@ -26,16 +45,17 @@ function Transaction() {
     if (logList[0]?.data === '0x') {
       iface = new ethers.utils.Interface(HannahNftAbi);
     } else {
-      // let abi = ['event Transfer(address indexed from, address indexed to, uint value)'];
       iface = new ethers.utils.Interface(HannahFirstTokenAbi);
     }
     const parsedEvents = logList.map(log => iface.parseLog(log));
+
     const changeLogs = parsedEvents.map(log => {
-      const { name: eventName } = log.eventFragment;
-      const { inputs } = log.eventFragment;
+      const { name: eventName, inputs } = log.eventFragment;
       const [from, to, data] = log.args;
+
       let args = [from, to];
       let newLog = {};
+
       if (eventName === 'Transfer' && inputs[2].name === 'tokenId') {
         const numVal = data.toNumber();
         args = [...args, numVal];
@@ -48,27 +68,20 @@ function Transaction() {
       newLog = { ...log, args };
       return newLog;
     });
-    console.log(changeLogs);
+
     setLogDetailList(changeLogs);
   }, [logList]);
-
-  const getTxList = async () => {
-    const filter = {
-      address: contractAddr,
-      fromBlock: 0,
-      toBlock: 'latest',
-    };
-    const logs = await provider.getLogs(filter);
-    console.log(logs);
-    setLogList(logs);
-  };
 
   return (
     <div className="row">
       <section className="container__wallet wide column gap10">
         <h4 className="title">CA Tx List</h4>
-        <InputForm value={contractAddr} onChange={e => setContractAddr(e.target.value)}>
-          <select name="networks" id="networks" value={network.network} onChange={handleNetwork}>
+        <InputForm name={'address'} value={input.address} onChange={handleInput}>
+          <select
+            name="networks"
+            id="networks"
+            value={network?.network}
+            onChange={e => handleNetwork(e?.target?.value)}>
             {networkList.map(network => (
               <option key={network.id} value={network.network}>
                 {network.name}
@@ -81,16 +94,7 @@ function Transaction() {
       <section className="container__wallet wide height500">
         <ul className="container__log">
           {logDetailList
-            .map((log, i) => (
-              <li key={log.topic + i} className="list__log">
-                <GivenDataForm label={'method'} value={log.name} />
-                <GivenDataForm label={'from Address'} value={log.args[0]} />
-                <GivenDataForm label={'to Address'} value={log.args[1]} />
-                {log.args[2] && (
-                  <GivenDataForm label={isErc20 ? 'value' : 'tokenId'} value={log.args[2]} />
-                )}
-              </li>
-            ))
+            .map((log, i) => <TransactionList key={log.topic + i} log={log} isErc20={isErc20} />)
             .reverse()}
         </ul>
       </section>
