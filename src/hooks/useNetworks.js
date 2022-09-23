@@ -18,6 +18,7 @@ function useNetworks(initialState = { id: 3, network: 'ropsten', name: 'ropsten'
   const handleNetwork = useCallback(chain => {
     const choosingNetwork = networkList.filter(network => chain === network.network);
     setNetwork(choosingNetwork[0]);
+    // eslint-disable-next-line
   }, []);
 
   const checkChainId = hexChainId => {
@@ -43,31 +44,7 @@ function useNetworks(initialState = { id: 3, network: 'ropsten', name: 'ropsten'
         console.error(error);
       }
     }
-  }, [network]);
-
-  // useEffect(() => {
-  //   async function switchChainId() {
-  //     if (network) {
-  //       const hexChainID = ethers.utils.hexlify(network.id);
-  //       try {
-  //         const resSwitchChain = await ethereum.request({
-  //           method: 'wallet_switchEthereumChain',
-  //           params: [{ chainId: checkChainId(hexChainID) }],
-  //         });
-  //         console.log('2: change MetaMask Chain Id');
-  //         if (resSwitchChain === null) setIsSwitchedChain(!resSwitchChain);
-  //       } catch (error) {
-  //         if (error.code === 4902) {
-  //           console.error('This network is not found in your network!');
-  //           // 다른 이유로 네트워크를 변경하지 못했을 때 처리
-  //         } else {
-  //           console.error(error);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   if (network) switchChainId();
-  // }, [network]);
+  }, [network, ethereum]);
 
   return { network, networkList, handleNetwork, switchMetaMaskChain };
 }

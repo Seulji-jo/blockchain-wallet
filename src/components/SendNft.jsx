@@ -16,7 +16,7 @@ function SendNft() {
   };
 
   const handleTransferNft = async () => {
-    const contractAddr = '0x7528D0211c5926EbFddFE9FBCafFDdC8F6adC5f8';
+    const contractAddr = process.env.REACT_APP_ERC721_CONTRACT;
     const providerSigner = getSigner();
     const contract = new ethers.Contract(contractAddr, HannahNftAbi, providerSigner);
 

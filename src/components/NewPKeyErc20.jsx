@@ -26,7 +26,7 @@ function NewPKeyPart({ sendAddr, newAddr, setNewAddr }) {
     const wallet = new Wallet(privateKey);
     const addr = utils.computeAddress(privateKey);
 
-    const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
+    const contractAddr = process.env.REACT_APP_ERC20_CONTRACT;
 
     const walletSigner = wallet.connect(provider);
     const contract = new Contract(contractAddr, HannahFirstTokenAbi, walletSigner);

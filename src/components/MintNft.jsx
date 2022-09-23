@@ -81,7 +81,7 @@ function MintNft() {
     if (tokenUri) {
       try {
         const providerSigner = getSigner();
-        const contractAddr = '0x7528D0211c5926EbFddFE9FBCafFDdC8F6adC5f8';
+        const contractAddr = process.env.REACT_APP_ERC721_CONTRACT;
         const contract = new ethers.Contract(contractAddr, HannahNftAbi, providerSigner);
         // const uri = `ipfs://${tokenUri}`;
         // ipfs를 붙여 민팅을 하게 되면 메타마스크에서 이미지가 나타나지 않는다.

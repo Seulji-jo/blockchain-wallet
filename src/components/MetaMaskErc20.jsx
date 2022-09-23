@@ -24,7 +24,7 @@ function MetaMaskApp({ sendAddr, metaMaskAddr, setMetaMaskAddr }) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const providerAcct = await provider.send('eth_requestAccounts');
-        const contractAddr = '0xA66D992f5689D12BF41EC3a6b18445a87AfB9Fd0';
+        const contractAddr = process.env.REACT_APP_ERC20_CONTRACT;
         const contract = new ethers.Contract(contractAddr, HannahFirstTokenAbi, signer);
 
         setProvider(provider);
