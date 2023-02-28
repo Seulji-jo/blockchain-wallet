@@ -1,6 +1,6 @@
 # Blockchain Wallet
 해당 프로젝트에선 기본 트랜젝션(코인 송금), ERC20 송금, ERC721(NFT) minting 그리고 nft 보내기, Contract의 트랜젝션 리스트를 다뤘습니다.
-리서치 및 프로젝트에 관한 자세한 기술은 [여기서](https://seulji-devlog.notion.site/BC-Ethereum-Proj-66eba31e21f6456d87960d9a36dd9d8c) 볼 수 있습니다.
+리서치 및 프로젝트에 관한 자세한 기술은 [여기서](https://velog.io/@seulgea/BC-Ethereum-Proj) 볼 수 있습니다.
 
 ## Directory Structure
 ```bash
